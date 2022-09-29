@@ -41,9 +41,42 @@
             return angles;
         }
         /**
+         * Obtenemos un número hexadecimal de 00 a ff.
+         *
+         * @return Retorna el string del número aleatorio en hexadecimal.
+         *
+         */
+        function randomHex() {
+            let num = Math.round(Math.random() * 0xff);
+            return (num < 10)?'0':'' + num.toString(16);
+        }
+        /**
+         * Obtenemos un color aleatorio.
+         *
+         * @param alpha Si su valor es verdadero, se retorna un color en formato rgba, de lo contrario, el color retornado será rgb.
+         *
+         * return Cadena de texto con el color en hexadecimal.
+         *
+         */
+        function randomColour(alpha = true) {
+
+            let r = randomHex();
+            let g = randomHex();
+            let b = randomHex();
+            let rgba = '#' + r + g + b;
+
+            if (alpha) {
+                let a = randomHex();
+                rgba = rgba + a;
+            }
+
+            return rgba;
+        }
+        /**
          * Aleatoriamente determina si el canvas debe rotar.
          *
          * @return Verdadero si el canvas debería rotar, de lo contrario, retorna falso.
+         *
          */
         function canRotate() {
             let n = Math.random() * 2;
@@ -56,7 +89,7 @@
         function drawSpirals(ctx, x, y, nCircles) {
             ctx.save();
             ctx.translate(x, y);
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 2;
 
             for (let i = 0; i < nCircles; i+=ctx.lineWidth) {
                 let angles = randomAngles();
@@ -79,20 +112,20 @@
             const HEIGHT = canvas.height;
             const WIDTH = canvas.width;
             const N_CIRCLES = HEIGHT;
-            const COLORS = ['black', '#3b4856', '#8e486d', '#7393b3'];
+            const N_COLOURS = 20;
 
             let source = {
                 x: WIDTH * 0.5,
                 y: HEIGHT * 0.5
             }
 
-            ctx.fillStyle = '#163c57';
+            ctx.fillStyle = randomColour();
             ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-            COLORS.forEach((color) => {
-                ctx.strokeStyle = color;
+            for (let i = 0; i < N_COLOURS; i++) {
+                ctx.strokeStyle = randomColour();
                 drawSpirals(ctx, source.x, source.y, N_CIRCLES);
-            });
+            }
         })();
     </script>
 </html>
