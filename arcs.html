@@ -48,7 +48,7 @@
          */
         function randomHex() {
             let num = Math.round(Math.random() * 0xff);
-            return (num < 10)?'0':'' + num.toString(16);
+            return (num < 0x10)?'0':'' + num.toString(16);
         }
         /**
          * Obtenemos un color aleatorio.
@@ -59,7 +59,6 @@
          *
          */
         function randomColour(alpha = true) {
-
             let r = randomHex();
             let g = randomHex();
             let b = randomHex();
@@ -89,7 +88,7 @@
         function drawSpirals(ctx, x, y, nCircles) {
             ctx.save();
             ctx.translate(x, y);
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 1;
 
             for (let i = 0; i < nCircles; i+=ctx.lineWidth) {
                 let angles = randomAngles();
