@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Test 0001</title>
+        <style>
+            canvas {
+                display: block;
+                margin: 3em auto;
+                box-shadow: 0 0 1em #7c7c7c;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas width="600" height="600"></canvas>
+    </body>
+    <script>
+        const deg2rad = (deg) => {
+            return deg / 180 * Math.PI;
+        }
+        /**
+         * Obtenemos un número hexadecimal de 00 a ff.
+         *
+         * @return Retorna el string del número aleatorio en hexadecimal.
+         *
+         */
+         function randomHex() {
+            let num = Math.round(Math.random() * 0xff);
+            return (num < 0x10)?'0':'' + num.toString(16);
+        }
+        /**
+         * Obtenemos un color aleatorio.
+         *
+         * @param alpha Si su valor es verdadero, se retorna un color en formato rgba, de lo contrario, el color retornado será rgb.
+         *
+         * return Cadena de texto con el color en hexadecimal.
+         *
+         */
+        function randomColour(alpha = true) {
+            let r = randomHex();
+            let g = randomHex();
+            let b = randomHex();
+            let rgba = '#' + r + g + b;
+
+            if (alpha) {
+                let a = randomHex();
+                rgba = rgba + a;
+            }
+
+            return rgba;
+        }
+        (function () {
+            let canvas = document.querySelector('canvas');
+            let ctx = canvas.getContext("2d");
+            let colors = [randomColour(false), randomColour(false)];
+
+            const HEIGHT = canvas.height;
+            const WIDTH = canvas.width;
+            let radious = HEIGHT / 2;
+
+            let source = {
+                x: WIDTH * 0.5,
+                y: HEIGHT * 0.5
+            }
+
+            while (radious > 10) {
+                ctx.save();
+                ctx.fillStyle = colors[0];
+                // ctx.strokeStyle = colors[0];
+                colors.reverse();
+                // ctx.fillStyle = randomColour();
+                ctx.translate(source.x, source.y);
+
+                ctx.beginPath();
+                ctx.arc(0, 0, radious, 0, 2 * Math.PI);
+                ctx.fill();
+
+                radious /= 2;
+                source.y += radious;
+
+                ctx.restore();
+            }
+        })();
+    </script>
+</html>
