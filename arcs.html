@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Test 0001</title>
+        <style>
+            canvas {
+                display: block;
+                margin: 3em auto;
+                box-shadow: 0 0 1em #7c7c7c;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas width="600" height="600"></canvas>
+    </body>
+    <script>
+        const deg2rad = (deg) => {
+            return deg / 180 * Math.PI;
+        }
+
+        /**
+         * Genera los angulos de inicio y fin del arco.
+         *
+         * @return Ángulos de principio y fin del arco. La estructura retorada es: { start, end }.
+         */
+        function randomAngles() {
+            let angles = {
+                start: Math.random() * (2 * Math.PI),
+                end: Math.random() * (2 * Math.PI)
+            }
+
+            if (angles.start > angles.end) {
+                angles.start = angles.start + angles.end;
+                angles.end = angles.start - angles.end;
+                angles.start = angles.start - angles.end;
+            }
+
+            return angles;
+        }
+        /**
+         * Aleatoriamente determina si el canvas debe rotar.
+         *
+         * @return Verdadero si el canvas debería rotar, de lo contrario, retorna falso.
+         */
+        function canRotate() {
+            let n = Math.random() * 2;
+            return (n & 1) === 1;
+        }
+        /**
+         * Dibuja las espirales.
+         *
+         */
+        function drawSpirals(ctx, x, y, nCircles) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.lineWidth = 1;
+
+            for (let i = 0; i < nCircles; i+=ctx.lineWidth) {
+                let angles = randomAngles();
+
+                if (canRotate()) {
+                    ctx.rotate(Math.PI);
+                }
+
+                ctx.beginPath();
+                ctx.arc(0, 0, i, angles.start, angles.end);
+                ctx.stroke();
+            }
+
+            ctx.restore();
+        }
+
+        (function () {
+            let canvas = document.querySelector('canvas');
+            let ctx = canvas.getContext("2d");
+            const HEIGHT = canvas.height;
+            const WIDTH = canvas.width;
+            const N_CIRCLES = HEIGHT;
+            const COLORS = ['black', '#3b4856', '#8e486d', '#7393b3'];
+
+            let source = {
+                x: WIDTH * 0.5,
+                y: HEIGHT * 0.5
+            }
+
+            ctx.fillStyle = '#163c57';
+            ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+            COLORS.forEach((color) => {
+                ctx.strokeStyle = color;
+                drawSpirals(ctx, source.x, source.y, N_CIRCLES);
+            });
+        })();
+    </script>
+</html>
