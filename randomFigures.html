@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Test 0001</title>
+        <style>
+            canvas {
+                display: block;
+                margin: 3em auto;
+                box-shadow: 0 0 1em #7c7c7c;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas width="600" height="600"></canvas>
+    </body>
+    <script>
+        const deg2rad = (deg) => {
+            return deg / 180 * Math.PI;
+        }
+        /**
+         * Genera los angulos de inicio y fin del arco.
+         *
+         * @return Ángulos de principio y fin del arco. La estructura retorada es: { start, end }.
+         */
+        function randomAngles() {
+            let angles = {
+                start: Math.random() * (2 * Math.PI),
+                end: Math.random() * (2 * Math.PI)
+            }
+
+            if (angles.start > angles.end) {
+                angles.start = angles.start + angles.end;
+                angles.end = angles.start - angles.end;
+                angles.start = angles.start - angles.end;
+            }
+
+            return angles;
+        }
+        /**
+         * Obtenemos un número hexadecimal de 00 a ff.
+         *
+         * @return Retorna el string del número aleatorio en hexadecimal.
+         *
+         */
+        function randomHex() {
+            let num = Math.round(Math.random() * 0xff);
+            return (num < 0x10)?'0':'' + num.toString(16);
+        }
+        /**
+         * Obtenemos un color aleatorio.
+         *
+         * @param alpha Si su valor es verdadero, se retorna un color en formato rgba, de lo contrario, el color retornado será rgb.
+         *
+         * return Cadena de texto con el color en hexadecimal.
+         *
+         */
+        function randomColour(alpha = true) {
+            let r = randomHex();
+            let g = randomHex();
+            let b = randomHex();
+            let rgba = '#' + r + g + b;
+
+            if (alpha) {
+                let a = randomHex();
+                rgba = rgba + a;
+            }
+
+            return rgba;
+        }
+        /**
+         * Retorna número aleatorio de 0 a n.
+         *
+         * @return Número aleatorio.
+         */
+        function randomNumber(n) {
+            return Math.random() * n;
+        }
+        /**
+         * Retorna un ángulo de 0 a 360.
+         *
+         * @return Ángulo en radianes.
+         */
+        function randomRad() {
+            return deg2rad(Math.random() * 360);
+        }
+        /**
+         * Rota el canvas aleatoriamente
+         */
+        function rotateCanvas(ctx) {
+            const baseAngle = 90;
+            ctx.rotate(deg2rad(90 * Math.round(Math.random() * 4)));
+        }
+        const drawCircle = (ctx, canvas, fill = true) => {
+            const HEIGHT = canvas.height;
+            const WIDTH = canvas.width;
+            let angles = randomAngles();
+
+            ctx.fillStyle = randomColour();
+            ctx.strokeStyle = ctx.fillStyle;
+
+            ctx.save();
+            ctx.rotate(randomRad());
+            ctx.beginPath();
+            ctx.arc(randomNumber(WIDTH), randomNumber(HEIGHT), randomNumber(HEIGHT), angles.start, angles.end);
+
+            if (fill) {
+                ctx.fill();
+            } else {
+                ctx.stroke();
+            }
+
+            ctx.restore();
+        }
+        const drawTriangle = (ctx, canvas, fill = true) => {
+            const HEIGHT = canvas.height;
+            const WIDTH = canvas.width;
+            let angles = randomAngles();
+
+            ctx.fillStyle = randomColour();
+            ctx.strokeStyle = ctx.fillStyle;
+
+            ctx.save();
+            ctx.rotate(randomRad());
+            ctx.beginPath();
+            ctx.moveTo(randomNumber(WIDTH), randomNumber(HEIGHT));
+            ctx.lineTo(randomNumber(WIDTH), randomNumber(HEIGHT));
+            ctx.lineTo(randomNumber(WIDTH), randomNumber(HEIGHT));
+            ctx.closePath();
+
+            if (fill) {
+                ctx.fill();
+            } else {
+                ctx.stroke();
+            }
+
+            ctx.restore();
+        }
+
+        (function () {
+            let canvas = document.querySelector('canvas');
+            let ctx = canvas.getContext("2d");
+            let figureFill = true;
+
+            const N = 45;
+            const nCircles = 30;
+            const square = {
+                height: 20,
+                width: 2
+            };
+            const initRadius = square.height * 3;
+            const degGap = 360 / (2*N);
+
+            for (let i = 0; i < nCircles; i++) {
+                rotateCanvas(ctx);
+                drawCircle(ctx, canvas, figureFill);
+                figureFill = !figureFill;
+            }
+            for (let i = 0; i < nCircles; i++) {
+                rotateCanvas(ctx);
+                drawTriangle(ctx, canvas, figureFill);
+                figureFill = !figureFill;
+            }
+        })();
+    </script>
+</html>
