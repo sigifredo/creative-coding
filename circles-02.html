@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Test 0001</title>
+        <style>
+            canvas {
+                display: block;
+                margin: 3em auto;
+                box-shadow: 0 0 1em #7c7c7c;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas width="600" height="600"></canvas>
+    </body>
+    <script>
+        const deg2rad = (deg) => {
+            return deg / 180 * Math.PI;
+        }
+        /**
+         * Genera los angulos de inicio y fin del arco.
+         *
+         * @return Ángulos de principio y fin del arco. La estructura retorada es: { start, end }.
+         */
+        function randomAngles() {
+            let angles = {
+                start: Math.random() * (2 * Math.PI),
+                end: Math.random() * (2 * Math.PI)
+            }
+
+            if (angles.start > angles.end) {
+                angles.start = angles.start + angles.end;
+                angles.end = angles.start - angles.end;
+                angles.start = angles.start - angles.end;
+            }
+
+            return angles;
+        }
+        /**
+         * Obtenemos un número hexadecimal de 0x00 a un máximo.
+         *
+         * @param nMax Número máximo a generar, por defecto es 0xff.
+         *
+         * @return Retorna el string del número aleatorio en hexadecimal.
+         *
+         */
+        function randomHex(nMax = 0xff) {
+            let num = Math.round(Math.random() * nMax);
+            return (num < 0x10)?'0':'' + num.toString(16);
+        }
+        /**
+         * Obtenemos un color aleatorio.
+         *
+         * @param alpha Si su valor es verdadero, se retorna un color en formato rgba, de lo contrario, el color retornado será rgb.
+         *
+         * return Cadena de texto con el color en hexadecimal.
+         *
+         */
+        function randomColour(alpha = true) {
+            let r = randomHex();
+            let g = randomHex();
+            let b = randomHex();
+            let rgba = '#' + r + g + b;
+
+            if (alpha) {
+                let a = randomHex();
+                rgba = rgba + a;
+            }
+
+            return rgba;
+        }
+        /**
+         * Retorna un color con un alpha aleatorio.
+         *
+         * @param nMax Número máximo a generar, por defecto es 0xff.
+         * @param color Color al cual se le agregará el componente alpha.
+         *
+         * @return Color con un alpha.
+         *
+         */
+        function randomAlpha(nMax = 0xff, color = '#000000') {
+            let a = randomHex(nMax);
+            return color + a;
+        }
+        /**
+         * Retorna número aleatorio de 0 a n.
+         *
+         * @return Número aleatorio.
+         */
+        function randomNumber(n) {
+            return Math.random() * n;
+        }
+        /**
+         * Retorna un ángulo de 0 a 360.
+         *
+         * @return Ángulo en radianes.
+         */
+        function randomRad() {
+            return deg2rad(Math.random() * 360);
+        }
+        /**
+         * Rota el canvas aleatoriamente
+         */
+        function rotateCanvas(ctx) {
+            const baseAngle = 90;
+            ctx.rotate(deg2rad(90 * Math.round(Math.random() * 4)));
+        }
+        const drawCircle = (ctx, canvas) => {
+            const HEIGHT = canvas.height;
+            const WIDTH = canvas.width;
+            const RADIUS = 20;
+
+            ctx.fillStyle = randomAlpha(0x40);
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(randomNumber(WIDTH), randomNumber(HEIGHT), randomNumber(RADIUS), 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.restore();
+        }
+        (function () {
+            let canvas = document.querySelector('canvas');
+            let ctx = canvas.getContext("2d");
+
+            const N = 45;
+            const nCircles = 5000;
+            const square = {
+                height: 20,
+                width: 2
+            };
+            const initRadius = square.height * 3;
+            const degGap = 360 / (2*N);
+
+            for (let i = 0; i < nCircles; i++) {
+                drawCircle(ctx, canvas);
+            }
+        })();
+    </script>
+</html>
